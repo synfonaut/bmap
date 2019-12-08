@@ -68,6 +68,9 @@ bmap.TransformTx = (tx) => {
 
   // We always know what the first protocol is, it's always in s1
   let prefix = tx.out.filter(tx => { return tx && tx.b0.op === 106 })[0].s1
+  if (prefix == 0) {
+      prefix = tx.out.filter(tx => { return tx && tx.b0.op === 106 })[0].s2
+  }
 
   // If s1 does not contain a protocol prefix, there's nothing to do
   if (!protocolMap.getKey(prefix)) {
@@ -101,7 +104,15 @@ bmap.TransformTx = (tx) => {
         let num = parseInt(pushdataKey.replace(/[A-Za-z]/g,''))
         if (num >= 0) {
           if (pushdataKey.startsWith('s') || pushdataKey.startsWith('ls')) {
-            valueMaps.string.set(num, opReturnOutput[pushdataKey])
+              const val = opReturnOutput[pushdataKey];
+              if (num === 1 && val == 0) {
+                // skip
+              } else if (num == 2 && val == "meta") {
+                // pull meta back one index
+                valueMaps.string.set(num - 1, val)
+              } else {
+                valueMaps.string.set(num, val)
+              }
           } else if(pushdataKey.startsWith('b') || pushdataKey.startsWith('lb')) {
             valueMaps.binary.set(num, opReturnOutput[pushdataKey])
           } else if(pushdataKey.startsWith('h') || pushdataKey.startsWith('lh')) {
