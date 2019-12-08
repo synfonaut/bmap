@@ -104,15 +104,7 @@ bmap.TransformTx = (tx) => {
         let num = parseInt(pushdataKey.replace(/[A-Za-z]/g,''))
         if (num >= 0) {
           if (pushdataKey.startsWith('s') || pushdataKey.startsWith('ls')) {
-              const val = opReturnOutput[pushdataKey];
-              if (num === 1 && val == 0) {
-                // skip
-              } else if (num == 2 && val == "meta") {
-                // pull meta back one index
-                valueMaps.string.set(num - 1, val)
-              } else {
-                valueMaps.string.set(num, val)
-              }
+            valueMaps.string.set(num, opReturnOutput[pushdataKey])
           } else if(pushdataKey.startsWith('b') || pushdataKey.startsWith('lb')) {
             valueMaps.binary.set(num, opReturnOutput[pushdataKey])
           } else if(pushdataKey.startsWith('h') || pushdataKey.startsWith('lh')) {
@@ -126,9 +118,14 @@ bmap.TransformTx = (tx) => {
         }
       }
 
+      let startIndex = 0;
+      if (valueMaps.string.get(1) == "0") { // Handle OP_FALSE
+        startIndex = 1;
+      }
+
       // Loop for pushdata count and find appropriate value
       let relativeIndex = 0
-      for (let x = 0; x < indexCount; x++) {
+      for (let x = startIndex; x < indexCount; x++) {
         let stringVal = valueMaps.string.get(x + 1)
         // console.log('x', x, 'relative', relativeIndex, 'val', currentVal)
         if (relativeIndex === 0) {
