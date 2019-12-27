@@ -19,6 +19,7 @@ bmap.TransformTx = (tx) => {
   protocolMap.set('MAP','1PuQa7K62MiKCtssSLKy1kh56WWU7MtUR5')
   protocolMap.set('METANET', 'meta')
   protocolMap.set('AIP','15PciHG22SNLQJXMoSUaWVi7WSqc7hCfva')
+  protocolMap.set('Bit.sv','1L8eNuA8ToLGK5aV4d5d9rXUAbRZUxKrhF')
   
   let encodingMap = new Map()
   encodingMap.set('utf8', 'string')
